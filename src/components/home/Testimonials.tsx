@@ -196,7 +196,7 @@ export default function Testimonials() {
                         What people say about working with me
                     </p>
 
-                    <div className="relative h-[550px] mb-12">
+                    <div className="relative min-h-[550px] h-auto md:h-[550px] mb-12">
                         {testimonials.map((testimonial, i) => (
                             <div
                                 key={i}
@@ -208,9 +208,8 @@ export default function Testimonials() {
                                             : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
                                 }`}
                             >
-                                <div
-                                    className="relative bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-lg
-                                    rounded-3xl p-8 md:p-12 border border-slate-700/50 shadow-2xl h-full flex flex-col"
+                                <div className="relative bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-lg
+                                rounded-3xl p-6 md:p-12 border border-slate-700/50 shadow-2xl min-h-[500px] flex flex-col"
                                 >
                                     <div
                                         className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>

@@ -96,7 +96,7 @@ export default function Projects() {
                         Explore my latest work and innovations
                     </p>
 
-                    <div className="relative h-[650px] mb-12">
+                    <div className="relative min-h-[650px] h-auto md:h-[650px] mb-12">
                         <div className="absolute inset-0 flex items-center justify-center"
                              style={{perspective: '1500px'}}>
                             {projects.map((project, i) => {
@@ -161,12 +161,12 @@ export default function Projects() {
                                                 </div>
                                             </div>
 
-                                            <div className="p-8">
-                                                <h3 className="text-3xl font-bold mb-4 text-white">{project.title}</h3>
-                                                <p className="text-white/70 mb-6 leading-relaxed text-lg">{project.description}</p>
+                                            <div className="p-4 md:p-8">
+                                                <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-white break-words">{project.title}</h3>
+                                                <p className="text-white/70 mb-4 md:mb-6 leading-relaxed text-base md:text-lg break-words overflow-hidden">{project.description}</p>
 
                                                 <div className="flex flex-wrap gap-2 mb-6">
-                                                    {project.tech.map((tech, j) => (
+                                                {project.tech.map((tech, j) => (
                                                         <span
                                                             key={j}
                                                             className="text-sm bg-indigo-500/20 text-indigo-300 px-4 py-2

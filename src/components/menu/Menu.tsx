@@ -27,9 +27,8 @@ export default function Menu() {
                         <span className="text-indigo-400">eripe</span>14
                     </div>
 
-                    {/* Desktop Menu */}
                     <div className="hidden md:flex space-x-8">
-                        {['About', 'Skills', 'Experience', 'Projects', 'Contact'].map((item) => (
+                        {['About', 'Skills', 'Projects', 'Contact'].map((item) => (
                             <button
                                 key={item}
                                 onClick={() => scrollToSection(item.toLowerCase())}
@@ -40,7 +39,6 @@ export default function Menu() {
                         ))}
                     </div>
 
-                    {/* Mobile Hamburger Button */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="md:hidden text-white p-2 hover:text-indigo-400 transition-colors"
@@ -54,7 +52,6 @@ export default function Menu() {
                     </button>
                 </div>
 
-                {/* Mobile Menu */}
                 <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
                     <div className="bg-slate-800/95 backdrop-blur-lg rounded-2xl border border-slate-700/50 overflow-hidden">
                         {['About', 'Skills', 'Experience', 'Projects', 'Contact'].map((item, i) => (
