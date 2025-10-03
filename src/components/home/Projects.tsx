@@ -14,7 +14,7 @@ export default function Projects() {
     const projects = [
         {
             title: 'Anglokom website',
-            description: 'My parents company website built primarily with TypeScript, designed to provide robust and modern functionality for web applications. With a focus on clean architecture and maintainability, anglokom leverages TypeScript’s type safety and scalability.',
+            description: 'Language trainings company website built primarily with TypeScript, designed to provide robust and modern functionality for web applications. With a focus on clean architecture and maintainability, anglokom leverages TypeScript’s type safety and scalability.',
             tech: ['React', 'Next.js', 'Supabase', 'Strapi', 'TypeScript'],
             gradient: 'from-cyan-600 to-sky-700',
             link: 'https://anglokom.pl'
