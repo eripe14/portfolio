@@ -1,13 +1,15 @@
 'use client';
 
-import {useState} from 'react';
-import {Code2, Rocket, Github, ChevronLeft, ChevronRight} from 'lucide-react';
+import React, {useRef, useState} from 'react';
+import {Code2, Rocket, ChevronLeft, ChevronRight} from 'lucide-react';
 import AnimatedGrid from '@/components/ui/AnimatedGrid';
 import FloatingParticles from '@/components/ui/FloatingParticles';
 import Link from "next/link";
 
 export default function Projects() {
     const [activeProject, setActiveProject] = useState(0);
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
 
     const projects = [
         {
@@ -76,14 +78,29 @@ export default function Projects() {
         setActiveProject((prev) => (prev - 1 + projects.length) % projects.length);
     };
 
+    const handleTouchStart  = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove  = (e: React.TouchEvent) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (touchStartX.current - touchEndX.current > 50) {
+            nextProject();
+        }
+        if (touchStartX.current - touchEndX.current < -50) {
+            prevProject();
+        }
+    };
+
     return (
         <section id="projects" className="relative bg-slate-900 text-white py-32 overflow-hidden">
             <AnimatedGrid/>
             <FloatingParticles count={25}/>
 
-            {/* Gradient Orbs */}
-            <div
-                className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
                  style={{animationDelay: '2s'}}></div>
 
@@ -96,8 +113,13 @@ export default function Projects() {
                         Explore my latest work and innovations
                     </p>
 
-                    <div className="relative min-h-[650px] h-auto md:h-[650px] mb-12">
-                        <div className="absolute inset-0 flex items-center justify-center"
+                    <div
+                        className="relative min-h-[700px] md:h-[650px] mb-12"
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        <div className="absolute inset-0 flex items-center justify-center md:block"
                              style={{perspective: '1500px'}}>
                             {projects.map((project, i) => {
                                 const offset = (i - activeProject + projects.length) % projects.length;
@@ -113,27 +135,19 @@ export default function Projects() {
                                     transform = 'translateX(0) scale(1) rotateY(0deg)';
                                     zIndex = 30;
                                     opacity = 1;
-                                }
-
-                                if (isPrev) {
+                                } else if (isPrev) {
                                     transform = 'translateX(-80%) scale(0.85) rotateY(25deg)';
                                     zIndex = 20;
                                     opacity = 0.6;
-                                }
-
-                                if (isNext) {
+                                } else if (isNext) {
                                     transform = 'translateX(80%) scale(0.85) rotateY(-25deg)';
                                     zIndex = 20;
                                     opacity = 0.6;
-                                }
-
-                                if (offset === 2) {
+                                } else if (offset === 2) {
                                     transform = 'translateX(140%) scale(0.7) rotateY(-35deg)';
                                     zIndex = 10;
                                     opacity = 0.3;
-                                }
-
-                                if (offset === projects.length - 2) {
+                                } else if (offset === projects.length - 2) {
                                     transform = 'translateX(-140%) scale(0.7) rotateY(35deg)';
                                     zIndex = 10;
                                     opacity = 0.3;
@@ -150,36 +164,38 @@ export default function Projects() {
                                             pointerEvents: isActive ? 'auto' : 'none'
                                         }}
                                     >
-                                        <div
-                                            className="bg-slate-800/50 backdrop-blur-sm rounded-3xl overflow-hidden border border-slate-700/50 shadow-2xl hover:shadow-indigo-500/20 transition-shadow">
-                                            <div
-                                                className={`h-64 bg-gradient-to-br ${project.gradient} relative overflow-hidden group`}>
+                                        <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl overflow-hidden border border-slate-700/50 shadow-2xl">
+                                            <div className={`h-48 md:h-64 bg-gradient-to-br ${project.gradient} relative overflow-hidden group`}>
                                                 <div className="absolute inset-0 bg-black/20"></div>
                                                 <div className="absolute inset-0 flex items-center justify-center">
-                                                    <Code2
-                                                        className="w-24 h-24 text-white/80 group-hover:scale-110 transition-transform duration-300"/>
+                                                    <Code2 className="w-16 h-16 md:w-24 md:h-24 text-white/80 group-hover:scale-110 transition-transform duration-300"/>
                                                 </div>
                                             </div>
 
                                             <div className="p-4 md:p-8">
-                                                <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-white break-words">{project.title}</h3>
-                                                <p className="text-white/70 mb-4 md:mb-6 leading-relaxed text-base md:text-lg break-words overflow-hidden">{project.description}</p>
+                                                <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-white break-words">
+                                                    {project.title}
+                                                </h3>
+                                                <p className="text-white/70 mb-4 md:mb-6 leading-relaxed text-sm md:text-lg break-words overflow-hidden">
+                                                    {project.description}
+                                                </p>
 
-                                                <div className="flex flex-wrap gap-2 mb-6">
-                                                {project.tech.map((tech, j) => (
+                                                <div className="flex flex-wrap gap-2 mb-4 md:mb-6">
+                                                    {project.tech.map((tech, j) => (
                                                         <span
                                                             key={j}
-                                                            className="text-sm bg-indigo-500/20 text-indigo-300 px-4 py-2
-                                                            rounded-full border border-indigo-500/30 hover:bg-indigo-500/30 transition-colors"
-                                                        >{tech}</span>
+                                                            className="text-xs md:text-sm bg-indigo-500/20 text-indigo-300 px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-indigo-500/30 hover:bg-indigo-500/30 transition-colors"
+                                                        >
+                                                            {tech}
+                                                        </span>
                                                     ))}
                                                 </div>
 
                                                 <div className="flex gap-4">
                                                     <Link
-                                                        className="flex-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
+                                                        className="flex-1 px-4 py-2.5 md:px-6 md:py-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 text-sm md:text-base"
                                                         href={project.link}
-                                                        target={"_blank"}
+                                                        target="_blank"
                                                     >
                                                         View Project <Rocket className="w-4 h-4"/>
                                                     </Link>
@@ -190,21 +206,6 @@ export default function Projects() {
                                 );
                             })}
                         </div>
-
-                        <button
-                            onClick={prevProject}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 z-40 p-4 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-sm rounded-full border border-slate-600/50 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/20"
-                            aria-label="Previous project"
-                        >
-                            <ChevronLeft className="w-6 h-6 text-white"/>
-                        </button>
-                        <button
-                            onClick={nextProject}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 z-40 p-4 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-sm rounded-full border border-slate-600/50 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/20"
-                            aria-label="Next project"
-                        >
-                            <ChevronRight className="w-6 h-6 text-white"/>
-                        </button>
                     </div>
 
                     <div className="flex justify-center gap-3 mt-8">

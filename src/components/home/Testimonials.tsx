@@ -1,12 +1,14 @@
 'use client';
 
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Star, Quote, ChevronLeft, ChevronRight} from 'lucide-react';
 import AnimatedGrid from '@/components/ui/AnimatedGrid';
 import FloatingParticles from '@/components/ui/FloatingParticles';
 
 export default function Testimonials() {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
 
     const testimonials = [
         {
@@ -176,13 +178,29 @@ export default function Testimonials() {
         setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
     };
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (touchStartX.current - touchEndX.current > 50) {
+            nextTestimonial();
+        }
+        if (touchStartX.current - touchEndX.current < -50) {
+            prevTestimonial();
+        }
+    };
+
     return (
         <section id="testimonials" className="relative bg-slate-900 text-white py-32 overflow-hidden">
             <AnimatedGrid/>
             <FloatingParticles count={20}/>
 
-            <div
-                className="absolute top-20 right-10 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-20 right-10 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl animate-pulse"
                  style={{animationDelay: '1.5s'}}
             ></div>
@@ -196,7 +214,12 @@ export default function Testimonials() {
                         What people say about working with me
                     </p>
 
-                    <div className="relative min-h-[550px] h-auto md:h-[550px] mb-12">
+                    <div
+                        className="relative min-h-[600px] md:min-h-[550px] mb-12"
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                    >
                         {testimonials.map((testimonial, i) => (
                             <div
                                 key={i}
@@ -208,49 +231,41 @@ export default function Testimonials() {
                                             : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
                                 }`}
                             >
-                                <div className="relative bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-lg
-                                rounded-3xl p-6 md:p-12 border border-slate-700/50 shadow-2xl min-h-[500px] flex flex-col"
-                                >
-                                    <div
-                                        className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
-                                    <div
-                                        className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
+                                <div className="relative bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-lg rounded-3xl p-6 md:p-12 border border-slate-700/50 shadow-2xl min-h-full flex flex-col">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
 
-                                    <div className="relative mb-6">
-                                        <Quote className="w-16 h-16 text-indigo-400/30"/>
+                                    <div className="relative mb-4 md:mb-6">
+                                        <Quote className="w-12 h-12 md:w-16 md:h-16 text-indigo-400/30"/>
                                     </div>
 
-                                    <div className="flex-1 mb-8 relative">
-                                        <p className="text-xl md:text-2xl text-white/90 leading-relaxed italic">
-                                            "{testimonial.text}"
+                                    <div className="flex-1 mb-6 md:mb-8 relative">
+                                        <p className="text-lg md:text-2xl text-white/90 leading-relaxed italic break-words">
+                                            &quot;{testimonial.text}&quot;
                                         </p>
                                     </div>
 
-                                    <div className="flex gap-1 mb-6 relative">
+                                    <div className="flex gap-1 mb-4 md:mb-6 relative">
                                         {[...Array(testimonial.rating)].map((_, i) => (
                                             <Star
                                                 key={i}
-                                                className="w-6 h-6 fill-yellow-400 text-yellow-400 animate-pulse"
-                                                style={{animationDelay: `${i * 0.1}s`}}
+                                                className="w-5 h-5 md:w-6 md:h-6 fill-yellow-400 text-yellow-400"
                                             />
                                         ))}
                                     </div>
 
-                                    {/* Client Info */}
-                                    <div className="flex flex-col md:flex-row md:items-center gap-6 relative">
-                                        <div
-                                            className={`w-20 h-20 rounded-full bg-gradient-to-br ${testimonial.image} flex items-center justify-center text-2xl font-bold shadow-lg ring-4 ring-slate-800`}>
+                                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 relative">
+                                        <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br ${testimonial.image} flex items-center justify-center text-xl md:text-2xl font-bold shadow-lg ring-4 ring-slate-800`}>
                                             {testimonial.name.split(' ').map(n => n[0]).join('')}
                                         </div>
                                         <div className="flex-1">
-                                            <h4 className="text-2xl font-bold text-white mb-1">{testimonial.name}</h4>
-                                            <p className="text-indigo-400 font-semibold text-lg">{testimonial.role}</p>
-                                            <p className="text-white/60">{testimonial.company}</p>
-                                            <p className="text-white/60">{testimonial.reviewDate}</p>
+                                            <h4 className="text-xl md:text-2xl font-bold text-white mb-1">{testimonial.name}</h4>
+                                            <p className="text-indigo-400 font-semibold text-base md:text-lg">{testimonial.role}</p>
+                                            <p className="text-white/60 text-sm md:text-base">{testimonial.company}</p>
+                                            <p className="text-white/60 text-sm md:text-base">{testimonial.reviewDate}</p>
                                         </div>
                                         <div className="md:text-right">
-                                            <div
-                                                className="inline-block bg-indigo-500/20 text-indigo-300 px-4 py-2 rounded-full text-sm border border-indigo-500/30">
+                                            <div className="inline-block bg-indigo-500/20 text-indigo-300 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm border border-indigo-500/30">
                                                 {testimonial.project}
                                             </div>
                                         </div>
@@ -258,24 +273,9 @@ export default function Testimonials() {
                                 </div>
                             </div>
                         ))}
-
-                        <button
-                            onClick={prevTestimonial}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-16 p-3 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-sm rounded-full border border-slate-600/50 transition-all duration-300 hover:scale-110 z-10 hover:shadow-lg hover:shadow-indigo-500/20"
-                            aria-label="Previous testimonial"
-                        >
-                            <ChevronLeft className="w-5 h-5 text-white"/>
-                        </button>
-                        <button
-                            onClick={nextTestimonial}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-16 p-3 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-sm rounded-full border border-slate-600/50 transition-all duration-300 hover:scale-110 z-10 hover:shadow-lg hover:shadow-indigo-500/20"
-                            aria-label="Next testimonial"
-                        >
-                            <ChevronRight className="w-5 h-5 text-white"/>
-                        </button>
                     </div>
 
-                    <div className="flex justify-center gap-3 mb-12">
+                    <div className="flex justify-center gap-3 mb-8 md:mb-12">
                         {testimonials.map((_, i) => (
                             <button
                                 key={i}
@@ -290,7 +290,7 @@ export default function Testimonials() {
                         ))}
                     </div>
 
-                    <p className="text-xl text-white/60 text-center">
+                    <p className="text-base md:text-xl text-white/60 text-center px-4">
                         Disclaimer: DevRoom & Rollerite are freelancing companies.
                     </p>
                 </div>
