@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Code2, Rocket, ChevronLeft, ChevronRight} from 'lucide-react';
 import AnimatedGrid from '@/components/ui/AnimatedGrid';
 import FloatingParticles from '@/components/ui/FloatingParticles';
@@ -69,6 +69,13 @@ export default function Projects() {
             link: 'https://github.com/eripe14/emplio'
         }
     ];
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveProject((prev) => (prev + 1) % projects.length);
+        }, 12000);
+        return () => clearInterval(timer);
+    }, [projects.length]);
 
     const nextProject = () => {
         setActiveProject((prev) => (prev + 1) % projects.length);
