@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Karol Dronia - Full-Stack Developer | eripe14',
+    title: 'Karol Dronia - Full-Stack Developer',
     description: 'Professional full-stack developer with 5+ years experience. Specialized in React, Node.js, Minecraft plugins, Discord bots, and web applications.',
     keywords: 'full-stack developer, React developer, Node.js, Minecraft plugins, Discord bots, web developer, eripe14',
     authors: [{name: 'Karol Dronia'}],
