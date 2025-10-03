@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
 
@@ -83,18 +85,31 @@ const LightRays: React.FC<LightRaysProps> = ({
     const animationIdRef = useRef<number | null>(null);
     const meshRef = useRef<any>(null);
     const cleanupFunctionRef = useRef<(() => void) | null>(null);
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(true); // Zmieniono na true
     const observerRef = useRef<IntersectionObserver | null>(null);
 
+    // Wykomentowano cały useEffect z IntersectionObserver
+    /*
     useEffect(() => {
         if (!containerRef.current) return;
 
         observerRef.current = new IntersectionObserver(
             entries => {
                 const entry = entries[0];
-                setIsVisible(entry.isIntersecting);
+                // Dodaj opóźnienie przed ukryciem, aby uniknąć flashów
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                } else {
+                    // Opóźnij ukrycie o 100ms
+                    setTimeout(() => {
+                        setIsVisible(false);
+                    }, 100);
+                }
             },
-            { threshold: 0.1 }
+            {
+                threshold: 0.05, // Zmniejsz threshold
+                rootMargin: '50px' // Dodaj margin dla wcześniejszego/późniejszego wykrywania
+            }
         );
 
         observerRef.current.observe(containerRef.current);
@@ -106,6 +121,7 @@ const LightRays: React.FC<LightRaysProps> = ({
             }
         };
     }, []);
+    */
 
     useEffect(() => {
         if (!isVisible || !containerRef.current) return;
@@ -124,13 +140,24 @@ const LightRays: React.FC<LightRaysProps> = ({
 
             const renderer = new Renderer({
                 dpr: Math.min(window.devicePixelRatio, 2),
-                alpha: true
+                alpha: true,
+                premultipliedAlpha: false, // Dodano
+                antialias: true, // Dodano
+                preserveDrawingBuffer: false // Dodano
             });
             rendererRef.current = renderer;
 
             const gl = renderer.gl;
+
+            // Ustaw przezroczyste tło dla canvas
+            gl.clearColor(0.0, 0.0, 0.0, 0.0);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
             gl.canvas.style.width = '100%';
             gl.canvas.style.height = '100%';
+            gl.canvas.style.backgroundColor = 'transparent'; // Dodano
+            gl.canvas.style.pointerEvents = 'none'; // Dodano
 
             while (containerRef.current.firstChild) {
                 containerRef.current.removeChild(containerRef.current.firstChild);
@@ -213,7 +240,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
                rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234,
                            1.1 * raysSpeed);
 
-  fragColor = rays1 * 0.5 + rays2 * 0.4;
+  fragColor = rays1 * 0.8 + rays2 * 0.6; // Zwiększono intensywność z 0.5/0.4 na 0.8/0.6
 
   if (noiseAmount > 0.0) {
     float n = noise(coord * 0.01 + iTime * 0.1);
@@ -221,9 +248,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   }
 
   float brightness = 1.0 - (coord.y / iResolution.y);
-  fragColor.x *= 0.1 + brightness * 0.8;
-  fragColor.y *= 0.3 + brightness * 0.6;
-  fragColor.z *= 0.5 + brightness * 0.5;
+  fragColor.x *= 0.2 + brightness * 1.0; // Zwiększono intensywność
+  fragColor.y *= 0.4 + brightness * 0.8; // Zwiększono intensywność
+  fragColor.z *= 0.6 + brightness * 0.7; // Zwiększono intensywność
 
   if (saturation != 1.0) {
     float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));
@@ -231,12 +258,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   }
 
   fragColor.rgb *= raysColor;
+  
+  // Zapewnij przezroczystość tam gdzie nie ma światła
+  fragColor.a = max(max(fragColor.r, fragColor.g), fragColor.b);
 }
 
 void main() {
   vec4 color;
   mainImage(color, gl_FragCoord.xy);
-  gl_FragColor  = color;
+  gl_FragColor = color;
 }`;
 
             const uniforms = {
@@ -264,7 +294,8 @@ void main() {
             const program = new Program(gl, {
                 vertex: vert,
                 fragment: frag,
-                uniforms
+                uniforms,
+                transparent: true // Dodano
             });
             const mesh = new Mesh(gl, { geometry, program });
             meshRef.current = mesh;
@@ -292,6 +323,9 @@ void main() {
                 if (!rendererRef.current || !uniformsRef.current || !meshRef.current) {
                     return;
                 }
+
+                // Wyczyść z przezroczystym tłem
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
                 uniforms.iTime.value = t * 0.001;
 
@@ -425,7 +459,8 @@ void main() {
     return (
         <div
             ref={containerRef}
-            className={`absolute inset-0 pointer-events-none ${className}`.trim()}
+            className={`absolute inset-0 pointer-events-none bg-transparent ${className}`.trim()}
+            style={{ backgroundColor: 'transparent' }}
         />
     );
 };

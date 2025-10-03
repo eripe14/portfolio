@@ -391,7 +391,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
                     <button
                         ref={toggleBtnRef}
-                        className="sm-toggle-modern group relative inline-flex items-center justify-center w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full cursor-pointer transition-all duration-300 ease-out hover:scale-110 hover:bg-white/15 hover:border-white/30 hover:shadow-lg hover:shadow-white/10 active:scale-95 pointer-events-auto"
+                        className="sm-toggle-modern group relative inline-flex items-center justify-center w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full cursor-pointer transition-all duration-300 ease-out hover:scale-110 hover:bg-white/15 hover:border-white/30 hover:shadow-lg hover:shadow-white/10 active:scale-95 pointer-events-auto sticky"
                         aria-label={open ? 'Close menu' : 'Open menu'}
                         aria-expanded={open}
                         aria-controls="staggered-menu-panel"
