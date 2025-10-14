@@ -7,6 +7,8 @@ import FloatingParticles from '@/components/ui/FloatingParticles';
 
 export default function Testimonials() {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
 
@@ -160,22 +162,43 @@ export default function Testimonials() {
             rating: 5,
             project: 'Custom plugin',
             reviewDate: '18/05/2025'
+        },
+        {
+            name: '.je.x',
+            company: 'DevRoom',
+            role: 'Plugin developer',
+            image: 'from-yellow-500 to-amber-500',
+            text: '5 stars, top dev, can only recommend',
+            rating: 5,
+            project: 'Custom contracts plugin',
+            reviewDate: '12/10/2025'
         }
     ];
 
     useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    useEffect(() => {
+        if (isPaused || isMobile) return;
+
         const timer = setInterval(() => {
             setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
         }, 10000);
         return () => clearInterval(timer);
-    }, [testimonials.length]);
+    }, [testimonials.length, isPaused, isMobile]);
 
     const nextTestimonial = () => {
         setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+        setIsPaused(true);
     };
 
     const prevTestimonial = () => {
         setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+        setIsPaused(true);
     };
 
     const handleTouchStart = (e: React.TouchEvent) => {
@@ -210,16 +233,43 @@ export default function Testimonials() {
                     <h2 className="text-5xl md:text-6xl font-bold text-indigo-400 mb-4 text-center">
                         Client testimonials
                     </h2>
-                    <p className="text-xl text-white/60 mb-16 text-center">
+                    <p className="text-xl text-white/60 mb-8 text-center">
                         What people say about working with me
                     </p>
+
+                    {isMobile && (
+                        <div className="text-center mb-6 text-sm text-indigo-300/80 bg-indigo-500/10 rounded-xl py-3 px-4 border border-indigo-500/20">
+                            👆 Swipe left or right, or tap the dots below to navigate
+                        </div>
+                    )}
 
                     <div
                         className="relative min-h-[600px] md:min-h-[550px] mb-12"
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
                         onTouchEnd={handleTouchEnd}
+                        onMouseEnter={() => !isMobile && setIsPaused(true)}
+                        onMouseLeave={() => !isMobile && setIsPaused(false)}
                     >
+                        {!isMobile && (
+                            <>
+                                <button
+                                    onClick={prevTestimonial}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 z-40 bg-indigo-500/90 hover:bg-indigo-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition-all duration-300"
+                                    aria-label="Previous testimonial"
+                                >
+                                    <ChevronLeft className="w-8 h-8"/>
+                                </button>
+                                <button
+                                    onClick={nextTestimonial}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 z-40 bg-indigo-500/90 hover:bg-indigo-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition-all duration-300"
+                                    aria-label="Next testimonial"
+                                >
+                                    <ChevronRight className="w-8 h-8"/>
+                                </button>
+                            </>
+                        )}
+
                         {testimonials.map((testimonial, i) => (
                             <div
                                 key={i}
@@ -279,7 +329,10 @@ export default function Testimonials() {
                         {testimonials.map((_, i) => (
                             <button
                                 key={i}
-                                onClick={() => setCurrentTestimonial(i)}
+                                onClick={() => {
+                                    setCurrentTestimonial(i);
+                                    setIsPaused(true);
+                                }}
                                 className={`transition-all duration-300 rounded-full ${
                                     i === currentTestimonial
                                         ? 'w-12 h-3 bg-indigo-500 shadow-lg shadow-indigo-500/50'
@@ -289,6 +342,12 @@ export default function Testimonials() {
                             />
                         ))}
                     </div>
+
+                    {isPaused && !isMobile && (
+                        <div className="text-center mb-4 text-sm text-white/50">
+                            Auto-rotation paused • Click arrows or dots to navigate
+                        </div>
+                    )}
 
                     <p className="text-base md:text-xl text-white/60 text-center px-4">
                         Disclaimer: DevRoom & Rollerite are freelancing companies.

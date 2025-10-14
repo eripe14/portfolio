@@ -15,7 +15,7 @@ export default function About() {
             <div className="container mx-auto px-6 relative z-10">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-5xl md:text-6xl font-bold text-indigo-400 mb-12 text-center">
-                        About Me
+                        About me
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-16 items-center">

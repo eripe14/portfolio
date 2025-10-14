@@ -120,6 +120,8 @@ export default function Skills() {
                         ))}
                     </div>
 
+                    <div className="absolute left-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+
                     <div className="relative">
                         <div className="text-center mb-12">
                             <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">

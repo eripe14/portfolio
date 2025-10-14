@@ -58,7 +58,6 @@ export default function Contact() {
             <AnimatedGrid />
             <FloatingParticles count={20} />
 
-            {/* Gradient Orbs */}
             <div className="absolute top-20 left-1/3 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-20 right-1/3 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
 
@@ -66,7 +65,7 @@ export default function Contact() {
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-5xl md:text-6xl font-bold text-indigo-400 mb-4">
-                            Let's Work Together
+                            Let's work together
                         </h2>
                         <p className="text-xl text-white/70">
                             Have a project in mind? Let's create something amazing together.
