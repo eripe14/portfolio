@@ -78,7 +78,7 @@ export default function Projects() {
             description: 'SimplePaste is a lightweight paste service for developers. It allows users to quickly and easily share code snippets, logs, configs, or any text via a simple web interface. Built with Java for backend robustness and JavaScript, HTML, and CSS for a responsive frontend, SimplePaste delivers a fast and user-friendly experience.',
             tech: ['Java', 'JavaScript', 'HTML', 'CSS'],
             gradient: 'from-teal-500 to-green-600',
-            link: 'https://anglokom.pl',
+            link: 'https://github.com/eripe14/SimplePaste',
             category: 'web' as const
         },
         {
@@ -87,6 +87,15 @@ export default function Projects() {
             tech: ['React Native', 'Node.js', 'MongoDB', 'AWS'],
             gradient: 'from-teal-500 to-green-600',
             link: 'https://github.com/eripe14/emplio',
+            category: 'web' as const
+        }
+        ,
+        {
+            title: 'Weather Dashboard',
+            description: 'Full-stack weather application built with newest technologies. Provides real-time weather data, forecasts, and interactive visualizations in a sleek, user-friendly interface. Backend is not completely finished yet.',
+            tech: ['React Native', 'Vite', 'Express', 'Prisma', 'PostgreSQL', 'Docker'],
+            gradient: 'from-amber-200 to-yellow-800',
+            link: 'https://github.com/eripe14/weather-dashboard',
             category: 'web' as const
         }
     ];

@@ -172,6 +172,16 @@ export default function Testimonials() {
             rating: 5,
             project: 'Custom contracts plugin',
             reviewDate: '12/10/2025'
+        },
+        {
+            name: 'roguestab',
+            company: 'DevRoom',
+            role: 'Plugin developer',
+            image: 'from-indigo-400 to-sky-900',
+            text: 'Really nice and calm dude. Always ready to help and fix stuff until it\'s properly completed! Highly recommended.',
+            rating: 5,
+            project: 'Custom zones plugin',
+            reviewDate: '09/11/2025'
         }
     ];
 
